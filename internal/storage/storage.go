@@ -11,9 +11,9 @@ import (
 )
 
 type Storage struct {
-	d *gorm.DB
-	r *gorm.DB
-	e *gorm.DB
+	P *gorm.DB
+	R *gorm.DB
+	E *gorm.DB
 }
 
 func New() *Storage {
@@ -36,8 +36,8 @@ func New() *Storage {
 	}
 
 	return &Storage{
-		d: d,
-		e: e,
-		r: r,
+		P: d,
+		E: e,
+		R: r,
 	}
 }
