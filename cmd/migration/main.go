@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/connor-davis/zingreports-portal-go/internal/models/postgres"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 )
 
@@ -11,7 +12,7 @@ func main() {
 
 	log.Printf("🔃 Running Postgres Migrations...")
 
-	storage.P.AutoMigrate()
+	storage.P.AutoMigrate(&postgres.User{})
 
 	log.Printf("✅ Finished running Postgres Migrations...")
 }
