@@ -20,19 +20,19 @@ func New() *Storage {
 	d, err := gorm.Open(postgres.Open(string(environment.POSTGRES_DSN)))
 
 	if err != nil {
-		log.Fatalf("Error connecting to Postgres with Gorm:\n%v", err)
+		log.Printf("🔥 Error connecting to Postgres with Gorm:\n%v", err.Error())
 	}
 
 	e, err := gorm.Open(mysql.Open(string(environment.MYSQL_DSN)))
 
 	if err != nil {
-		log.Fatalf("Error connecting to MySQL with Gorm:\n%v", err)
+		log.Printf("🔥 Error connecting to MySQL with Gorm:\n%v", err.Error())
 	}
 
 	r, err := gorm.Open(sqlserver.Open(string(environment.SQLSERVER_DSN)))
 
 	if err != nil {
-		log.Fatalf("Error connecting to SQLServer with Gorm:\n%v", err)
+		log.Printf("🔥 Error connecting to SQLServer with Gorm:\n%v", err.Error())
 	}
 
 	return &Storage{
