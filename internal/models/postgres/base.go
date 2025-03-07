@@ -14,13 +14,15 @@ type Base struct {
 }
 
 func (b *Base) BeforeCreate(tx *gorm.DB) (err error) {
-	id, err := gonanoid.Generate("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)
+	if b.Id == "" {
+		id, err := gonanoid.Generate("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		b.Id = id
 	}
-
-	b.Id = id
 
 	return nil
 }
