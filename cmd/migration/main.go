@@ -13,7 +13,14 @@ func main() {
 
 	log.Printf("🔃 Running Postgres Migrations...")
 
-	storage.P.AutoMigrate(&postgres.User{}, &postgres.Poi{})
+	storage.P.AutoMigrate(
+		&postgres.User{},
+		&postgres.Poi{},
+		&postgres.Report{},
+		&postgres.ReportTable{},
+		&postgres.ReportTableColumn{},
+		&postgres.ReportTableReference{},
+	)
 
 	log.Printf("✅ Finished running Postgres Migrations...")
 }
