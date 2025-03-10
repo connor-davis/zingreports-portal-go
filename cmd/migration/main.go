@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/connor-davis/zingreports-portal-go/internal/models/postgres"
-	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 )
 
@@ -24,16 +23,6 @@ func main() {
 		&postgres.ReportColumn{},
 		&postgres.ReportFilter{},
 	)
-
-	userService := services.NewUserService(storage)
-
-	user, err := userService.FindUserById("test")
-
-	if err != nil {
-		log.Printf("🔥 Failed to find user:\n%s", err.Error())
-	} else {
-		log.Printf("🔎 Found user:\n%v", user)
-	}
 
 	log.Printf("✅ Finished running Postgres Migrations...")
 }
