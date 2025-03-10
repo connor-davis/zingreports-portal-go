@@ -20,6 +20,8 @@ func main() {
 		&postgres.ReportTable{},
 		&postgres.ReportTableColumn{},
 		&postgres.ReportTableReference{},
+		&postgres.ReportColumn{},
+		&postgres.ReportFilter{},
 	)
 
 	log.Printf("✅ Finished running Postgres Migrations...")
