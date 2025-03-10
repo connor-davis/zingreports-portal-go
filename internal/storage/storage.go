@@ -17,27 +17,41 @@ type Storage struct {
 }
 
 func New() *Storage {
+	return &Storage{}
+}
+
+func (s *Storage) ConnectPostgres() {
 	d, err := gorm.Open(postgres.Open(string(environment.POSTGRES_DSN)))
 
 	if err != nil {
 		log.Printf("🔥 Error connecting to Postgres with Gorm:\n%v", err.Error())
+	} else {
+		log.Printf("✅ Connected to Postgres with Gorm.")
 	}
 
-	e, err := gorm.Open(mysql.Open(string(environment.MYSQL_DSN)))
+	s.P = d
+}
+
+func (s *Storage) ConnectMySQL() {
+	d, err := gorm.Open(mysql.Open(string(environment.MYSQL_DSN)))
 
 	if err != nil {
 		log.Printf("🔥 Error connecting to MySQL with Gorm:\n%v", err.Error())
+	} else {
+		log.Printf("✅ Connected to MySQL with Gorm.")
 	}
 
-	r, err := gorm.Open(sqlserver.Open(string(environment.SQLSERVER_DSN)))
+	s.R = d
+}
+
+func (s *Storage) ConnectSQLServer() {
+	d, err := gorm.Open(sqlserver.Open(string(environment.SQLSERVER_DSN)))
 
 	if err != nil {
 		log.Printf("🔥 Error connecting to SQLServer with Gorm:\n%v", err.Error())
+	} else {
+		log.Printf("✅ Connected to SQLServer with Gorm.")
 	}
 
-	return &Storage{
-		P: d,
-		E: e,
-		R: r,
-	}
+	s.E = d
 }
