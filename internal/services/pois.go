@@ -7,14 +7,19 @@ import (
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 )
 
-func NewPoiService(storage *storage.Storage) *Service {
-	return &Service{
+type PoiService struct {
+	storage *storage.Storage
+}
+
+func NewPoiService(storage *storage.Storage) *PoiService {
+	return &PoiService{
 		storage: storage,
 	}
 }
 
-func (s *Service) CreatePoi(poi postgres.Poi) error {
-	result := s.storage.P.Create(&poi)
+func (s *PoiService) CreatePoi(poi postgres.Poi) error {
+	result := s.storage.Postgres.
+		Create(&poi)
 
 	if result.Error != nil {
 		return result.Error
@@ -23,10 +28,12 @@ func (s *Service) CreatePoi(poi postgres.Poi) error {
 	return nil
 }
 
-func (s *Service) UpdatePoiById(id string, poi postgres.Poi) error {
+func (s *PoiService) UpdatePoiById(id string, poi postgres.Poi) error {
 	var old postgres.Poi
 
-	result := s.storage.P.Where("id = $1").Find(&old)
+	result := s.storage.Postgres.
+		Where("id = $1").
+		Find(&old)
 
 	if result.Error != nil {
 		return result.Error
@@ -36,7 +43,9 @@ func (s *Service) UpdatePoiById(id string, poi postgres.Poi) error {
 		return fmt.Errorf("The poi was not found.")
 	}
 
-	result = s.storage.P.Model(&old).Updates(&poi)
+	result = s.storage.Postgres.
+		Model(&old).
+		Updates(&poi)
 
 	if result.Error != nil {
 		return result.Error
@@ -45,10 +54,12 @@ func (s *Service) UpdatePoiById(id string, poi postgres.Poi) error {
 	return nil
 }
 
-func (s *Service) DeletePoiById(id string) error {
+func (s *PoiService) DeletePoiById(id string) error {
 	var poi postgres.Poi
 
-	result := s.storage.P.Where("id = $1").Find(&poi)
+	result := s.storage.Postgres.
+		Where("id = $1").
+		Find(&poi)
 
 	if result.Error != nil {
 		return result.Error
@@ -58,7 +69,8 @@ func (s *Service) DeletePoiById(id string) error {
 		return fmt.Errorf("The poi was not found.")
 	}
 
-	result = s.storage.P.Delete(&poi)
+	result = s.storage.Postgres.
+		Delete(&poi)
 
 	if result.Error != nil {
 		return result.Error
@@ -67,10 +79,12 @@ func (s *Service) DeletePoiById(id string) error {
 	return nil
 }
 
-func (s *Service) FindPoiById(id string) (*postgres.Poi, error) {
+func (s *PoiService) FindPoiById(id string) (*postgres.Poi, error) {
 	var poi postgres.Poi
 
-	result := s.storage.P.Where("id = $1", id).Find(&poi)
+	result := s.storage.Postgres.
+		Where("id = $1", id).
+		Find(&poi)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -83,10 +97,11 @@ func (s *Service) FindPoiById(id string) (*postgres.Poi, error) {
 	return &poi, nil
 }
 
-func (s *Service) FindPois() ([]postgres.Poi, error) {
+func (s *PoiService) FindPois() ([]postgres.Poi, error) {
 	var pois []postgres.Poi
 
-	result := s.storage.P.Find(&pois)
+	result := s.storage.Postgres.
+		Find(&pois)
 
 	if result.Error != nil {
 		return nil, result.Error

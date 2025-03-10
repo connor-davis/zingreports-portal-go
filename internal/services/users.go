@@ -7,14 +7,19 @@ import (
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 )
 
-func NewUserService(storage *storage.Storage) *Service {
-	return &Service{
-		storage: storage,
+type UserService struct {
+	Storage *storage.Storage
+}
+
+func NewUserService(storage *storage.Storage) *UserService {
+	return &UserService{
+		Storage: storage,
 	}
 }
 
-func (s *Service) CreateUser(user postgres.User) error {
-	result := s.storage.P.Create(&user)
+func (s *UserService) CreateUser(user postgres.User) error {
+	result := s.Storage.Postgres.
+		Create(&user)
 
 	if result.Error != nil {
 		return result.Error
@@ -23,10 +28,12 @@ func (s *Service) CreateUser(user postgres.User) error {
 	return nil
 }
 
-func (s *Service) UpdateUserById(id string, user postgres.User) error {
+func (s *UserService) UpdateUserById(id string, user postgres.User) error {
 	var old postgres.User
 
-	result := s.storage.P.Where("id = $1").Find(&old)
+	result := s.Storage.Postgres.
+		Where("id = $1").
+		Find(&old)
 
 	if result.Error != nil {
 		return result.Error
@@ -36,7 +43,9 @@ func (s *Service) UpdateUserById(id string, user postgres.User) error {
 		return fmt.Errorf("The user was not found.")
 	}
 
-	result = s.storage.P.Model(&old).Updates(&user)
+	result = s.Storage.Postgres.
+		Model(&old).
+		Updates(&user)
 
 	if result.Error != nil {
 		return result.Error
@@ -45,10 +54,12 @@ func (s *Service) UpdateUserById(id string, user postgres.User) error {
 	return nil
 }
 
-func (s *Service) DeleteUserById(id string) error {
+func (s *UserService) DeleteUserById(id string) error {
 	var old postgres.User
 
-	result := s.storage.P.Where("id = $1").Find(&old)
+	result := s.Storage.Postgres.
+		Where("id = $1").
+		Find(&old)
 
 	if result.Error != nil {
 		return result.Error
@@ -58,7 +69,8 @@ func (s *Service) DeleteUserById(id string) error {
 		return fmt.Errorf("The user was not found.")
 	}
 
-	result = s.storage.P.Delete(&old)
+	result = s.Storage.Postgres.
+		Delete(&old)
 
 	if result.Error != nil {
 		return result.Error
@@ -67,10 +79,12 @@ func (s *Service) DeleteUserById(id string) error {
 	return nil
 }
 
-func (s *Service) FindUserById(id string) (*postgres.User, error) {
+func (s *UserService) FindUserById(id string) (*postgres.User, error) {
 	var user postgres.User
 
-	result := s.storage.P.Where("id = $1", id).Find(&user)
+	result := s.Storage.Postgres.
+		Where("id = $1", id).
+		Find(&user)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -83,10 +97,11 @@ func (s *Service) FindUserById(id string) (*postgres.User, error) {
 	return &user, nil
 }
 
-func (s *Service) FindUsers() ([]postgres.User, error) {
+func (s *UserService) FindUsers() ([]postgres.User, error) {
 	var users []postgres.User
 
-	result := s.storage.P.Find(&users)
+	result := s.Storage.Postgres.
+		Find(&users)
 
 	if result.Error != nil {
 		return nil, result.Error

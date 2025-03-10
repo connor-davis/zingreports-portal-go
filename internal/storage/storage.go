@@ -11,9 +11,9 @@ import (
 )
 
 type Storage struct {
-	P *gorm.DB
-	R *gorm.DB
-	E *gorm.DB
+	Postgres *gorm.DB
+	Radius   *gorm.DB
+	Ekasi    *gorm.DB
 }
 
 func New() *Storage {
@@ -29,7 +29,7 @@ func (s *Storage) ConnectPostgres() {
 		log.Printf("✅ Connected to Postgres with Gorm.")
 	}
 
-	s.P = d
+	s.Postgres = d
 }
 
 func (s *Storage) ConnectMySQL() {
@@ -41,7 +41,7 @@ func (s *Storage) ConnectMySQL() {
 		log.Printf("✅ Connected to MySQL with Gorm.")
 	}
 
-	s.R = d
+	s.Radius = d
 }
 
 func (s *Storage) ConnectSQLServer() {
@@ -53,5 +53,5 @@ func (s *Storage) ConnectSQLServer() {
 		log.Printf("✅ Connected to SQLServer with Gorm.")
 	}
 
-	s.E = d
+	s.Ekasi = d
 }
