@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
+	"github.com/connor-davis/zingreports-portal-go/cmd/api/http"
 	"github.com/connor-davis/zingreports-portal-go/internal/environment"
-	"github.com/connor-davis/zingreports-portal-go/internal/http"
 	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/goccy/go-json"

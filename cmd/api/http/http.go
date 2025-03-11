@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/connor-davis/zingreports-portal-go/internal/http/authentication"
+	"github.com/connor-davis/zingreports-portal-go/cmd/api/http/authentication"
 	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/gofiber/fiber/v2"

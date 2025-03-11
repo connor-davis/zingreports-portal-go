@@ -11,17 +11,28 @@ type Login struct {
 	Password string `json:"password" validate:"required" binding:"required"`
 }
 
+// Login godoc
+// @Summary Authenticate User
+// @Description Authenticate a user
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param login body Login true "Login payload."
+// @Success 200 {string} string "Authenticated."
+// @Failure 400 {string} string "Invalid request body."
+// @Failure 401 {string} string "Unauthorized."
+// @Router /authentication/login [post]
 func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 	var login Login
 
 	if err := c.BodyParser(&login); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			SendString("Invalid payload.")
+			SendString("Invalid request body.")
 	}
 
 	if err := helpers.Validate(login); err != nil {
 		return c.Status(fiber.StatusBadRequest).
-			SendString("Invalid payload.")
+			SendString("Invalid request body.")
 	}
 
 	user, err := a.userService.FindUserByEmail(login.Email)
@@ -42,6 +53,6 @@ func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 		a.storage.Postgres.
 			Updates(&user)
 
-		return c.SendStatus(fiber.StatusOK)
+		return c.Status(fiber.StatusOK).SendString("ok")
 	}
 }

@@ -1,4 +1,15 @@
 basePath: /api
+definitions:
+  authentication.Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
 host: localhost:6173
 info:
   contact:
@@ -8,5 +19,35 @@ info:
   description: This is the ZingFibre Reports Portal API built with Fiber
   title: ZingFibre Reports Portal API
   version: 1.0.0
-paths: {}
+paths:
+  /authentication/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user
+      parameters:
+      - description: Login payload.
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/authentication.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Authenticated.
+          schema:
+            type: string
+        "400":
+          description: Invalid request body.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+      summary: Authenticate User
+      tags:
+      - Authentication
 swagger: "2.0"
