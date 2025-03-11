@@ -7,10 +7,11 @@ import (
 
 type Report struct {
 	Base
-	Name    string         `json:"name" gorm:"type:text;not null;" validate:"required"`
-	Table   ReportTable    `json:"table" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
-	Columns []ReportColumn `json:"columns" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
-	Filters []ReportFilter `json:"filters" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
+	Name       string         `json:"name" gorm:"type:text;not null;" validate:"required"`
+	DataSource string         `json:"dataSource" gorm:"type:text;not null;" validate:"required"`
+	Table      ReportTable    `json:"table" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
+	Columns    []ReportColumn `json:"columns" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
+	Filters    []ReportFilter `json:"filters" gorm:"foreignKey:ReportId;references:Id;constraint:onDelete:CASCADE;"`
 }
 
 func (r *Report) BeforeCreate(tx *gorm.DB) error {
