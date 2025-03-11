@@ -1,0 +1,12 @@
+basePath: /api
+host: localhost:6173
+info:
+  contact:
+    email: connor.davis@thusa.co.za
+    name: Connor Davis
+    url: https://thusa.co.za
+  description: This is the ZingFibre Reports Portal API built with Fiber
+  title: ZingFibre Reports Portal API
+  version: 1.0.0
+paths: {}
+swagger: "2.0"

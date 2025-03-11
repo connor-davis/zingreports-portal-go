@@ -1,0 +1,16 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the ZingFibre Reports Portal API built with Fiber",
+        "title": "ZingFibre Reports Portal API",
+        "contact": {
+            "name": "Connor Davis",
+            "url": "https://thusa.co.za",
+            "email": "connor.davis@thusa.co.za"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:6173",
+    "basePath": "/api",
+    "paths": {}
+}
