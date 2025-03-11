@@ -97,6 +97,24 @@ func (s *UserService) FindUserById(id string) (*postgres.User, error) {
 	return &user, nil
 }
 
+func (s *UserService) FindUserByEmail(email string) (*postgres.User, error) {
+	var user postgres.User
+
+	result := s.Storage.Postgres.
+		Where("email = $1", email).
+		Find(&user)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if user.Id == "" {
+		return nil, fmt.Errorf("The user was not found.")
+	}
+
+	return &user, nil
+}
+
 func (s *UserService) FindUsers() ([]postgres.User, error) {
 	var users []postgres.User
 
