@@ -6,6 +6,9 @@ import (
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/connor-davis/zingreports-portal-go/internal/environment"
+	"github.com/connor-davis/zingreports-portal-go/internal/http"
+	"github.com/connor-davis/zingreports-portal-go/internal/services"
+	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -61,6 +64,15 @@ func main() {
 
 		return c.Type("html").SendString(html)
 	})
+
+	storage := storage.New()
+
+	userService := services.NewUserService(storage)
+	poiService := services.NewPoiService(storage)
+
+	http := http.NewHttpRouter(storage, userService, poiService)
+
+	api.Route("/", http.LoadRoutes)
 
 	if err := app.Listen(fmt.Sprintf(":%s", environment.PORT)); err != nil {
 		log.Printf("🔥 An error occured that caused the API to shutdown:\n%s", err.Error())

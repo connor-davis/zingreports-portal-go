@@ -1,10 +1,9 @@
-package http
+package authentication
 
 import (
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/connor-davis/zingreports-portal-go/internal/helpers"
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Login struct {
@@ -12,7 +11,7 @@ type Login struct {
 	Password string `json:"password" validate:"required" binding:"required"`
 }
 
-func (h *HttpRouter) Login(c *fiber.Ctx) error {
+func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 	var login Login
 
 	if err := c.BodyParser(&login); err != nil {
@@ -25,7 +24,7 @@ func (h *HttpRouter) Login(c *fiber.Ctx) error {
 			SendString("Invalid payload.")
 	}
 
-	user, err := h.userService.FindUserByEmail(login.Email)
+	user, err := a.userService.FindUserByEmail(login.Email)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).
@@ -40,7 +39,7 @@ func (h *HttpRouter) Login(c *fiber.Ctx) error {
 
 		user.MfaVerified = false
 
-		h.storage.Postgres.
+		a.storage.Postgres.
 			Updates(&user)
 
 		return c.SendStatus(fiber.StatusOK)

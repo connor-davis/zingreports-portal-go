@@ -8,17 +8,17 @@ import (
 )
 
 type UserService struct {
-	Storage *storage.Storage
+	storage *storage.Storage
 }
 
 func NewUserService(storage *storage.Storage) *UserService {
 	return &UserService{
-		Storage: storage,
+		storage: storage,
 	}
 }
 
 func (s *UserService) CreateUser(user postgres.User) error {
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Create(&user)
 
 	if result.Error != nil {
@@ -31,7 +31,7 @@ func (s *UserService) CreateUser(user postgres.User) error {
 func (s *UserService) UpdateUserById(id string, user postgres.User) error {
 	var old postgres.User
 
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Where("id = $1").
 		Find(&old)
 
@@ -43,7 +43,7 @@ func (s *UserService) UpdateUserById(id string, user postgres.User) error {
 		return fmt.Errorf("The user was not found.")
 	}
 
-	result = s.Storage.Postgres.
+	result = s.storage.Postgres.
 		Model(&old).
 		Updates(&user)
 
@@ -57,7 +57,7 @@ func (s *UserService) UpdateUserById(id string, user postgres.User) error {
 func (s *UserService) DeleteUserById(id string) error {
 	var old postgres.User
 
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Where("id = $1").
 		Find(&old)
 
@@ -69,7 +69,7 @@ func (s *UserService) DeleteUserById(id string) error {
 		return fmt.Errorf("The user was not found.")
 	}
 
-	result = s.Storage.Postgres.
+	result = s.storage.Postgres.
 		Delete(&old)
 
 	if result.Error != nil {
@@ -82,7 +82,7 @@ func (s *UserService) DeleteUserById(id string) error {
 func (s *UserService) FindUserById(id string) (*postgres.User, error) {
 	var user postgres.User
 
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Where("id = $1", id).
 		Find(&user)
 
@@ -100,7 +100,7 @@ func (s *UserService) FindUserById(id string) (*postgres.User, error) {
 func (s *UserService) FindUserByEmail(email string) (*postgres.User, error) {
 	var user postgres.User
 
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Where("email = $1", email).
 		Find(&user)
 
@@ -118,7 +118,7 @@ func (s *UserService) FindUserByEmail(email string) (*postgres.User, error) {
 func (s *UserService) FindUsers() ([]postgres.User, error) {
 	var users []postgres.User
 
-	result := s.Storage.Postgres.
+	result := s.storage.Postgres.
 		Find(&users)
 
 	if result.Error != nil {
