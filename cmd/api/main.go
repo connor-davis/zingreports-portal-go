@@ -89,9 +89,7 @@ func main() {
 }
 
 func CreateAdminUser(userService *services.UserService) {
-	adminUser, err := userService.FindUserByEmail(string(environment.ADMIN_EMAIL))
-
-	log.Printf("Admin: %v", adminUser)
+	_, err := userService.FindUserByEmail(string(environment.ADMIN_EMAIL))
 
 	if err != nil {
 		if strings.Contains(err.Error(), "The user was not found.") {

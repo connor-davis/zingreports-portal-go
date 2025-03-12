@@ -1,8 +1,9 @@
 package authentication
 
 import (
+	"strings"
+
 	"github.com/connor-davis/zingreports-portal-go/internal/constants"
-	"github.com/connor-davis/zingreports-portal-go/internal/models/postgres"
 	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/gofiber/fiber/v2"
@@ -37,9 +38,9 @@ func (a *AuthenticationRouter) Authorized() fiber.Handler {
 				SendString(constants.UnauthorizedMessage)
 		}
 
-		userId := session.Get("user")
+		userId := session.Get("user").(string)
 
-		if userId == nil || userId == "" {
+		if userId == "" {
 			return c.Status(fiber.StatusUnauthorized).
 				SendString(constants.UnauthorizedMessage)
 		}
@@ -59,11 +60,9 @@ func (a *AuthenticationRouter) Authorized() fiber.Handler {
 			return c.Status(fiber.StatusInternalServerError).SendString("Error saving session.")
 		}
 
-		var user postgres.User
+		user, err := a.userService.FindUserById(userId)
 
-		a.storage.Postgres.Where("id = ?", userId).Find(&user)
-
-		if user.Id == "" {
+		if err != nil && strings.Contains(err.Error(), "The user was not found.") {
 			return c.Status(fiber.StatusUnauthorized).
 				SendString(constants.UnauthorizedMessage)
 		}

@@ -14,7 +14,7 @@ import (
 // @Success 200 {object} postgres.User "User object"
 // @Router /authentication/check [get]
 func (a *AuthenticationRouter) Check(c *fiber.Ctx) error {
-	user := c.Locals("user").(postgres.User)
+	user := c.Locals("user").(*postgres.User)
 
 	return c.Status(fiber.StatusOK).JSON(&user)
 }
