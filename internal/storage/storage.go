@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/connor-davis/zingreports-portal-go/internal/environment"
+	"github.com/gofiber/fiber/v2/middleware/session"
+	fiberPg "github.com/gofiber/storage/postgres/v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
@@ -14,10 +16,27 @@ type Storage struct {
 	Postgres *gorm.DB
 	Radius   *gorm.DB
 	Ekasi    *gorm.DB
+	Sessions *session.Store
 }
 
 func New() *Storage {
-	return &Storage{}
+	sessions := session.New(session.Config{
+		Storage: fiberPg.New(fiberPg.Config{
+			Table:         "sessions",
+			ConnectionURI: string(environment.POSTGRES_DSN),
+		}),
+		KeyLookup:         "cookie:zing_session",
+		CookieDomain:      string(environment.COOKIE_DOMAIN),
+		CookiePath:        "/",
+		CookieSecure:      true,
+		CookieSameSite:    "Strict",
+		CookieSessionOnly: true,
+		CookieHTTPOnly:    true,
+	})
+
+	return &Storage{
+		Sessions: sessions,
+	}
 }
 
 func (s *Storage) ConnectPostgres() {

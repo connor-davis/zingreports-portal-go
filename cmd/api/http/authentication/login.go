@@ -21,6 +21,7 @@ type Login struct {
 // @Success 200 {string} string "Authenticated."
 // @Failure 400 {string} string "Invalid request body."
 // @Failure 401 {string} string "Unauthorized."
+// @Failure 500 {string} string "Internal Server Error."
 // @Router /authentication/login [post]
 func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 	var login Login
@@ -52,6 +53,20 @@ func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 
 		a.storage.Postgres.
 			Updates(&user)
+
+		session, err := a.storage.Sessions.Get(c)
+
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).
+				SendString("Error acquiring session.")
+		}
+
+		session.Set("user", user)
+
+		if err := session.Save(); err != nil {
+			return c.Status(fiber.StatusInternalServerError).
+				SendString("Error saving session.")
+		}
 
 		return c.Status(fiber.StatusOK).SendString("ok")
 	}
