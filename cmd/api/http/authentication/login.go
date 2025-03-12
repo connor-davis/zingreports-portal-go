@@ -61,7 +61,7 @@ func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 				SendString("Error acquiring session.")
 		}
 
-		session.Set("user", user)
+		session.Set("user", user.Id)
 
 		if err := session.Save(); err != nil {
 			return c.Status(fiber.StatusInternalServerError).

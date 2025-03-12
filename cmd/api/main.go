@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/MarceloPetrucio/go-scalar-api-reference"
 	"github.com/connor-davis/zingreports-portal-go/cmd/api/http"
 	"github.com/connor-davis/zingreports-portal-go/internal/environment"
+	"github.com/connor-davis/zingreports-portal-go/internal/models/postgres"
 	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // @title           ZingFibre Reports Portal API
@@ -67,6 +70,8 @@ func main() {
 
 	storage := storage.New()
 
+	storage.ConnectPostgres()
+
 	userService := services.NewUserService(storage)
 	poiService := services.NewPoiService(storage)
 
@@ -74,7 +79,34 @@ func main() {
 
 	api.Route("/", http.LoadRoutes)
 
+	if !fiber.IsChild() {
+		go CreateAdminUser(userService)
+	}
+
 	if err := app.Listen(fmt.Sprintf(":%s", environment.PORT)); err != nil {
 		log.Printf("🔥 An error occured that caused the API to shutdown:\n%s", err.Error())
+	}
+}
+
+func CreateAdminUser(userService *services.UserService) {
+	adminUser, err := userService.FindUserByEmail(string(environment.ADMIN_EMAIL))
+
+	log.Printf("Admin: %v", adminUser)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "The user was not found.") {
+			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(environment.ADMIN_PASSWORD), bcrypt.DefaultCost)
+
+			if err == nil {
+				if err := userService.CreateUser(postgres.User{
+					Name:     "Administrator",
+					Email:    string(environment.ADMIN_EMAIL),
+					Password: string(hashedPassword),
+					Role:     "admin",
+				}); err == nil {
+					log.Printf("✅ Created the admin user.")
+				}
+			}
+		}
 	}
 }

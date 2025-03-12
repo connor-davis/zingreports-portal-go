@@ -10,6 +10,34 @@ definitions:
     - email
     - password
     type: object
+  postgres.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      mfaEnabled:
+        type: boolean
+      mfaVerified:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - role
+    type: object
 host: localhost:6173
 info:
   contact:
@@ -20,6 +48,21 @@ info:
   title: ZingFibre Reports Portal API
   version: 1.0.0
 paths:
+  /authentication/check:
+    get:
+      consumes:
+      - application/json
+      description: Check if user is authenticated
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User object
+          schema:
+            $ref: '#/definitions/postgres.User'
+      summary: Check
+      tags:
+      - Authentication
   /authentication/login:
     post:
       consumes:
@@ -45,6 +88,10 @@ paths:
             type: string
         "401":
           description: Unauthorized.
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error.
           schema:
             type: string
       summary: Authenticate User

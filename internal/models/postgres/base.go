@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"log"
 	"time"
 
 	gonanoid "github.com/matoous/go-nanoid/v2"
@@ -14,6 +15,8 @@ type Base struct {
 }
 
 func (b *Base) BeforeCreate(tx *gorm.DB) (err error) {
+	log.Printf("Base")
+
 	if b.Id == "" {
 		id, err := gonanoid.Generate("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)
 

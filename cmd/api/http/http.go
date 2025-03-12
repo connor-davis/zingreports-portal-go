@@ -27,11 +27,21 @@ func NewHttpRouter(
 
 func (h *HttpRouter) LoadRoutes(router fiber.Router) {
 	// Authentication
-	authentication := authentication.NewAuthenticationRouter(
+	a := authentication.NewAuthenticationRouter(
 		h.storage,
 		h.userService,
 		h.poiService,
 	)
+	authentication := router.Group("/authentication")
 
-	router.Post("/login", authentication.Login)
+	authentication.Get(
+		"/check",
+		a.Authorized(),
+		a.Check,
+	)
+
+	authentication.Post(
+		"/login",
+		a.Login,
+	)
 }
