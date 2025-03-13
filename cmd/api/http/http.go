@@ -8,9 +8,7 @@ import (
 )
 
 type HttpRouter struct {
-	storage     *storage.Storage
-	userService *services.UserService
-	poiService  *services.PoiService
+	authentication *authentication.AuthenticationRouter
 }
 
 func NewHttpRouter(
@@ -18,28 +16,46 @@ func NewHttpRouter(
 	userService *services.UserService,
 	poiService *services.PoiService,
 ) *HttpRouter {
+	authentication := authentication.NewAuthenticationRouter(
+		storage,
+		userService,
+	)
+
 	return &HttpRouter{
-		storage:     storage,
-		userService: userService,
-		poiService:  poiService,
+		authentication: authentication,
 	}
 }
 
 func (h *HttpRouter) LoadRoutes(router fiber.Router) {
-	// Authentication
-	a := authentication.NewAuthenticationRouter(
-		h.storage,
-		h.userService,
-		h.poiService,
-	)
+	// Authentication Group
 	authentication := router.Group("/authentication")
 
-	authentication.Get("/check", a.Authorized(), a.Check)
-	authentication.Post("/login", a.Login)
+	authentication.Get(
+		"/check",
+		h.authentication.Authorized(),
+		h.authentication.Check,
+	)
+	authentication.Post(
+		"/login",
+		h.authentication.Login,
+	)
 
+	// MFA Group
 	mfa := authentication.Group("/mfa")
 
-	mfa.Get("/enable", a.Authorized(), a.Enable)
-	mfa.Post("/verify", a.Authorized(), a.Verify)
-	mfa.Patch("/disable", a.Authorized(), a.Disable)
+	mfa.Get(
+		"/enable",
+		h.authentication.Authorized(),
+		h.authentication.Enable,
+	)
+	mfa.Post(
+		"/verify",
+		h.authentication.Authorized(),
+		h.authentication.Verify,
+	)
+	mfa.Patch(
+		"/disable",
+		h.authentication.Authorized(),
+		h.authentication.Disable,
+	)
 }
