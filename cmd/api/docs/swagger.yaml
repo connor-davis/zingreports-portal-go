@@ -10,6 +10,13 @@ definitions:
     - email
     - password
     type: object
+  authentication.VerifyMfaPayload:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
   postgres.User:
     properties:
       createdAt:
@@ -26,8 +33,6 @@ definitions:
         type: boolean
       name:
         type: string
-      password:
-        type: string
       role:
         type: string
       updatedAt:
@@ -35,7 +40,6 @@ definitions:
     required:
     - email
     - name
-    - password
     - role
     type: object
 host: localhost:6173
@@ -95,6 +99,92 @@ paths:
           schema:
             type: string
       summary: Authenticate User
+      tags:
+      - Authentication
+  /authentication/mfa/disable:
+    patch:
+      consumes:
+      - application/json
+      description: Disable MFA for the current user.
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Invalid query parameters.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "403":
+          description: Forbidden.
+          schema:
+            type: string
+        "404":
+          description: The user was not found.
+          schema:
+            type: string
+      summary: Disable
+      tags:
+      - Authentication
+  /authentication/mfa/enable:
+    get:
+      consumes:
+      - application/json
+      description: Enable MFA for the current user.
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: QR Code
+          schema:
+            type: file
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Enable
+      tags:
+      - Authentication
+  /authentication/mfa/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verify MFA for the current user.
+      parameters:
+      - description: Verify MFA Payload.
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/authentication.VerifyMfaPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Invalid MFA code.
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error.
+          schema:
+            type: string
+      summary: Verify
       tags:
       - Authentication
 swagger: "2.0"

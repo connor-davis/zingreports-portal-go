@@ -49,10 +49,11 @@ func (a *AuthenticationRouter) Login(c *fiber.Ctx) error {
 				SendString("Invalid email or password.")
 		}
 
-		user.MfaVerified = false
-
 		a.storage.Postgres.
-			Updates(&user)
+			Model(user).
+			Updates(map[string]interface{}{
+				"mfa_verified": false,
+			})
 
 		session, err := a.storage.Sessions.Get(c)
 

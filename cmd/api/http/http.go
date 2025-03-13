@@ -34,14 +34,12 @@ func (h *HttpRouter) LoadRoutes(router fiber.Router) {
 	)
 	authentication := router.Group("/authentication")
 
-	authentication.Get(
-		"/check",
-		a.Authorized(),
-		a.Check,
-	)
+	authentication.Get("/check", a.Authorized(), a.Check)
+	authentication.Post("/login", a.Login)
 
-	authentication.Post(
-		"/login",
-		a.Login,
-	)
+	mfa := authentication.Group("/mfa")
+
+	mfa.Get("/enable", a.Authorized(), a.Enable)
+	mfa.Post("/verify", a.Authorized(), a.Verify)
+	mfa.Patch("/disable", a.Authorized(), a.Disable)
 }

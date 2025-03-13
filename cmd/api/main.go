@@ -56,7 +56,7 @@ func main() {
 		html, err := scalar.ApiReferenceHTML(&scalar.Options{
 			SpecURL:       fmt.Sprintf("http://localhost:%s/api/api-spec", environment.PORT),
 			Theme:         scalar.ThemeDefault,
-			Layout:        scalar.LayoutClassic,
+			Layout:        scalar.LayoutModern,
 			BaseServerURL: fmt.Sprintf("http://localhost:%s", environment.PORT),
 			DarkMode:      true,
 		})
