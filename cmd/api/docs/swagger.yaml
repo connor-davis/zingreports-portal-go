@@ -187,4 +187,75 @@ paths:
       summary: Verify
       tags:
       - Authentication
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: View all users.
+      parameters:
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/postgres.User'
+            type: array
+        "400":
+          description: Invalid query parameters.
+          schema:
+            type: string
+        "401":
+          description: Unauthorized.
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error.
+          schema:
+            type: string
+      summary: View All
+      tags:
+      - Users
+  /users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: View a user by id.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/postgres.User'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "404":
+          description: The user was not found.
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error.
+          schema:
+            type: string
+      summary: View
+      tags:
+      - Users
 swagger: "2.0"
