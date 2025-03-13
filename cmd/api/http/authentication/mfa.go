@@ -33,8 +33,6 @@ type DisableMfaQuery struct {
 func (a *AuthenticationRouter) Enable(c *fiber.Ctx) error {
 	user := c.Locals("user").(*postgres.User)
 
-	log.Printf("Old: %v", user)
-
 	if user.MfaSecret == "" {
 		secret, err := totp.Generate(totp.GenerateOpts{
 			Issuer:      "Zing Fibre",
@@ -46,8 +44,7 @@ func (a *AuthenticationRouter) Enable(c *fiber.Ctx) error {
 		})
 
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).
-				SendString(err.Error())
+			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 
 		secretString := secret.Secret()
@@ -58,14 +55,11 @@ func (a *AuthenticationRouter) Enable(c *fiber.Ctx) error {
 			Updates(user)
 	}
 
-	log.Printf("New: %v", user)
-
 	secretBytes, err := base32.StdEncoding.WithPadding(base32.NoPadding).
 		DecodeString(user.MfaSecret)
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			SendString(err.Error())
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	secret, err := totp.Generate(totp.GenerateOpts{
@@ -79,8 +73,7 @@ func (a *AuthenticationRouter) Enable(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			SendString(err.Error())
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	var pngBuffer bytes.Buffer
@@ -88,8 +81,7 @@ func (a *AuthenticationRouter) Enable(c *fiber.Ctx) error {
 	image, err := secret.Image(256, 256)
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).
-			SendString(err.Error())
+		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
 	png.Encode(&pngBuffer, image)

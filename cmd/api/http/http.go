@@ -76,5 +76,16 @@ func (h *HttpRouter) LoadRoutes(router fiber.Router) {
 	)
 
 	// Users Group
-	_ = router.Group("/users")
+	users := router.Group("/users")
+
+	users.Get(
+		"/",
+		h.middleware.Authorized(),
+		h.users.ViewAll,
+	)
+	users.Get(
+		"/:id",
+		h.middleware.Authorized(),
+		h.users.View,
+	)
 }

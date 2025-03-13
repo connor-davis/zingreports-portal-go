@@ -5,6 +5,7 @@ import (
 
 	"github.com/connor-davis/zingreports-portal-go/internal/models/postgres"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
+	"gorm.io/gorm/clause"
 )
 
 type UserService struct {
@@ -115,10 +116,26 @@ func (s *UserService) FindUserByEmail(email string) (*postgres.User, error) {
 	return &user, nil
 }
 
-func (s *UserService) FindUsers() ([]postgres.User, error) {
+func (s *UserService) FindUsers(limit *int, offset *int) ([]postgres.User, error) {
 	var users []postgres.User
 
+	Limit := -1
+	Offset := -1
+
+	if limit != nil && *limit > 0 {
+		Limit = *limit
+	}
+
+	if offset != nil {
+		Offset = *offset
+	}
+
 	result := s.storage.Postgres.
+		Limit(Limit).
+		Offset(Offset).
+		Order(clause.OrderByColumn{
+			Column: clause.Column{Name: "email"},
+		}).
 		Find(&users)
 
 	if result.Error != nil {
