@@ -10,7 +10,7 @@ type AuthenticationRouter struct {
 	userService *services.UserService
 }
 
-func NewAuthenticationRouter(
+func New(
 	storage *storage.Storage,
 	userService *services.UserService,
 ) *AuthenticationRouter {

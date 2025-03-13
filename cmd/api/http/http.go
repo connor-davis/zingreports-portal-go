@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/connor-davis/zingreports-portal-go/cmd/api/http/authentication"
 	"github.com/connor-davis/zingreports-portal-go/cmd/api/http/middleware"
+	"github.com/connor-davis/zingreports-portal-go/cmd/api/http/users"
 	"github.com/connor-davis/zingreports-portal-go/internal/services"
 	"github.com/connor-davis/zingreports-portal-go/internal/storage"
 	"github.com/gofiber/fiber/v2"
@@ -11,6 +12,7 @@ import (
 type HttpRouter struct {
 	middleware     *middleware.Middleware
 	authentication *authentication.AuthenticationRouter
+	users          *users.UsersRouter
 }
 
 func NewHttpRouter(
@@ -20,7 +22,12 @@ func NewHttpRouter(
 ) *HttpRouter {
 	middleware := middleware.New(storage, userService)
 
-	authentication := authentication.NewAuthenticationRouter(
+	authentication := authentication.New(
+		storage,
+		userService,
+	)
+
+	users := users.New(
 		storage,
 		userService,
 	)
@@ -28,6 +35,7 @@ func NewHttpRouter(
 	return &HttpRouter{
 		middleware:     middleware,
 		authentication: authentication,
+		users:          users,
 	}
 }
 
