@@ -74,4 +74,7 @@ func (h *HttpRouter) LoadRoutes(router fiber.Router) {
 		h.middleware.Authorized(),
 		h.authentication.Disable,
 	)
+
+	// Users Group
+	_ = router.Group("/users")
 }
