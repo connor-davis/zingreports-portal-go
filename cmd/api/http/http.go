@@ -20,7 +20,10 @@ func NewHttpRouter(
 	userService *services.UserService,
 	poiService *services.PoiService,
 ) *HttpRouter {
-	middleware := middleware.New(storage, userService)
+	middleware := middleware.New(
+		storage,
+		userService,
+	)
 
 	authentication := authentication.New(
 		storage,
